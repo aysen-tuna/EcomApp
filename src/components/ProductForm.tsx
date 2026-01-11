@@ -105,7 +105,6 @@ export function ProductForm({
         onChange={(v) => onChange({ stock: v })}
       />
 
-      {/* Images (UI only) */}
       <div className="grid gap-2">
         <Label>Images</Label>
 

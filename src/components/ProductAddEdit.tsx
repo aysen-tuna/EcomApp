@@ -130,7 +130,7 @@ export function ProductAddEdit(props: Props) {
         const { editProduct } = await import(
           "@/app/actions/admin/products/edit"
         );
-        await editProduct(props.productId, raw);
+        await editProduct(user.uid, props.productId, raw);
       }
 
       router.replace("/");

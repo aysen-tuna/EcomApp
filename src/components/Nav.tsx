@@ -19,9 +19,21 @@ import { useAuth } from "@/app/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
+import { useEffect, useState } from "react";
+
+import { getCartCount, onCartChange } from "@/lib/cart";
+
 export function Nav() {
   const { user, logout, isAdmin } = useAuth();
   const router = useRouter();
+
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const update = () => setCartCount(getCartCount());
+    update();
+    return onCartChange(update);
+  }, []);
 
   return (
     <nav className="flex w-full justify-between items-center">
@@ -37,12 +49,29 @@ export function Nav() {
             {user ? (
               <>
                 <NavigationMenuItem>
-                  <div
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-300 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100 
-             font-semibold uppercase select-none"
+                  <Link
+                    href={cartCount > 0 ? "/checkout" : "#"}
+                    className="relative flex items-center justify-center"
+                    aria-label="Go to checkout"
                   >
-                    {(user.email?.[0] ?? "U").toUpperCase()}
-                  </div>
+                    <div
+                      className="flex h-9 w-9 items-center justify-center rounded-full
+                      bg-neutral-300 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100
+                      font-semibold uppercase select-none border border-neutral-400 dark:border-neutral-700"
+                    >
+                      {(user.email?.[0] ?? "U").toUpperCase()}
+                    </div>
+
+                    {cartCount > 0 ? (
+                      <span
+                        className="absolute -top-2 -right-2 min-w-5 h-5 px-1
+                        rounded-full bg-red-600 text-white text-xs
+                        flex items-center justify-center leading-none"
+                      >
+                        {cartCount > 99 ? "99+" : cartCount}
+                      </span>
+                    ) : null}
+                  </Link>
                 </NavigationMenuItem>
 
                 {isAdmin && (
