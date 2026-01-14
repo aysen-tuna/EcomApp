@@ -31,6 +31,8 @@ export default function ProductList() {
 
   const [cartCount, setCartCount] = useState(0);
 
+  const { user } = useAuth();
+
   useEffect(() => {
     setCartCount(getCartPrices().length);
   }, []);
@@ -85,6 +87,8 @@ export default function ProductList() {
             >
               <p className="font-semibold mb-4">{p.title}</p>
 
+
+{user && (
               <div className="my-4 flex flex-col-reverse items-end">
                 <Button
                   type="button"
@@ -106,6 +110,7 @@ export default function ProductList() {
                   <p className="text-xs text-white mt-2">Added!!!</p>
                 )}
               </div>
+)}
 
               {img ? (
                 <div className="relative mb-3 bg-neutral-100 dark:bg-neutral-900">
