@@ -28,7 +28,7 @@ type CartPayloadItem = {
 };
 
 export default function CheckoutPage() {
-    const { user } = useAuth();
+  const { user } = useAuth();
   const uid = user?.uid;
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -93,12 +93,12 @@ export default function CheckoutPage() {
   }
 
   function handleMinus(priceId: string) {
-    removeOneFromCart(priceId,uid);
+    removeOneFromCart(priceId, uid);
     syncCart();
   }
 
   function handlePlus(priceId: string) {
-    addPriceToCart(priceId,uid);
+    addPriceToCart(priceId, uid);
     syncCart();
   }
 
