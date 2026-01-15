@@ -6,9 +6,19 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
 
     const pricesRaw = formData.get("prices");
+     const cartRaw = formData.get("cart");
+    const userIdRaw = formData.get("userId");
+
     if (!pricesRaw || typeof pricesRaw !== "string") {
       return NextResponse.json({ error: "Missing prices" }, { status: 400 });
     }
+
+     if (!cartRaw || typeof cartRaw !== "string") {
+      return NextResponse.json({ error: "Missing cart" }, { status: 400 });
+    }
+
+    const userId = typeof userIdRaw === "string" ? userIdRaw : "guest";
+
 
     const prices = pricesRaw
       .split(",")
@@ -45,6 +55,11 @@ export async function POST(request: NextRequest) {
       mode: "payment",
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout`,
+
+      metadata: {
+        userId: userId && userId.length > 0 ? userId : "guest",
+        cart: cartRaw,
+      },
     });
 
     if (!session.url) {

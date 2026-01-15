@@ -127,6 +127,7 @@ export default function CheckoutPage() {
             name="cart"
             value={JSON.stringify(cartPayload)}
           />
+          <input type="hidden" name="userId" value={uid ?? ""} />
 
           <Button
             type="submit"
