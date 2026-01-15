@@ -5,6 +5,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { addPriceToCart, getCartPrices, removeOneFromCart } from "@/lib/cart";
+import { useAuth } from "@/app/AuthProvider";
 
 type Product = {
   id: string;
@@ -21,7 +22,15 @@ type CartRow = {
   product?: Product;
 };
 
+type CartPayloadItem = {
+  productId: string;
+  qty: number;
+};
+
 export default function CheckoutPage() {
+    const { user } = useAuth();
+  const uid = user?.uid;
+
   const [products, setProducts] = useState<Product[]>([]);
   const [cartPrices, setCartPrices] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
@@ -35,8 +44,8 @@ export default function CheckoutPage() {
   }, []);
 
   useEffect(() => {
-    setCartPrices(getCartPrices());
-  }, []);
+    setCartPrices(getCartPrices(uid));
+  }, [uid]);
 
   const cartRows: CartRow[] = useMemo(() => {
     const rows: CartRow[] = [];
@@ -70,17 +79,26 @@ export default function CheckoutPage() {
     return sum;
   }, [cartRows]);
 
+  const cartPayload: CartPayloadItem[] = useMemo(() => {
+    return cartRows
+      .map((row) => ({
+        productId: row.product?.id ?? "",
+        qty: row.quantity,
+      }))
+      .filter((x) => Boolean(x.productId) && x.qty > 0);
+  }, [cartRows]);
+
   function syncCart() {
-    setCartPrices(getCartPrices());
+    setCartPrices(getCartPrices(uid));
   }
 
   function handleMinus(priceId: string) {
-    removeOneFromCart(priceId);
+    removeOneFromCart(priceId,uid);
     syncCart();
   }
 
   function handlePlus(priceId: string) {
-    addPriceToCart(priceId);
+    addPriceToCart(priceId,uid);
     syncCart();
   }
 
@@ -104,8 +122,16 @@ export default function CheckoutPage() {
           onSubmit={() => setBusy(true)}
         >
           <input type="hidden" name="prices" value={cartPrices.join(",")} />
+          <input
+            type="hidden"
+            name="cart"
+            value={JSON.stringify(cartPayload)}
+          />
 
-          <Button type="submit" disabled={totalCount < 1 || busy}>
+          <Button
+            type="submit"
+            disabled={totalCount < 1 || busy || cartPayload.length < 1}
+          >
             {busy
               ? "Redirecting..."
               : `Pay with Stripe (€${grandTotal.toFixed(2)})`}

@@ -25,15 +25,16 @@ import { getCartCount, onCartChange } from "@/lib/cart";
 
 export function Nav() {
   const { user, logout, isAdmin } = useAuth();
+  const uid = user?.uid;
   const router = useRouter();
 
   const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
-    const update = () => setCartCount(getCartCount());
+    const update = () => setCartCount(getCartCount(uid));
     update();
     return onCartChange(update);
-  }, []);
+  }, [uid]);
 
   return (
     <nav className="flex w-full justify-between items-center">

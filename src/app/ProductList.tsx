@@ -7,7 +7,7 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { deleteProduct } from "@/app/actions/admin/products/delete";
-import { addPriceToCart, getCartPrices } from "@/lib/cart";
+import { getCartCount, onCartChange } from "@/lib/cart";
 
 type Product = {
   id: string;
@@ -31,11 +31,14 @@ export default function ProductList() {
 
   const [cartCount, setCartCount] = useState(0);
 
-  const { user } = useAuth();
+const { user } = useAuth();
+const uid = user?.uid;
 
-  useEffect(() => {
-    setCartCount(getCartPrices().length);
-  }, []);
+useEffect(() => {
+  const update = () => setCartCount(getCartCount(uid));
+  update();
+  return onCartChange(update);
+}, [uid]);
 
   async function load() {
     const snap = await getDocs(collection(db, "products"));
@@ -97,7 +100,7 @@ export default function ProductList() {
              dark:bg-neutral-200 dark:text-black dark:hover:bg-neutral-300"
                   onClick={() => {
                     if (!p.stripePriceId) return;
-                    addPriceToCart(p.stripePriceId);
+                  addPriceToCart(p.stripePriceId, user?.uid);
                     setCartCount((prev) => prev + 1);
                     setAddedId(p.id);
                     setTimeout(() => setAddedId(null), 1500);
