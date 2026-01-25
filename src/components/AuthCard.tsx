@@ -52,6 +52,7 @@ export function AuthCard({ title, buttonText, error, onSubmit }: Props) {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="abc@example.com"
                   value={email}
@@ -66,6 +67,7 @@ export function AuthCard({ title, buttonText, error, onSubmit }: Props) {
 
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
