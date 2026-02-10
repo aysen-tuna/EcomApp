@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 type Props = {
+  id?: string;
   label: string;
   value: string;
   onChange: (value: string) => void;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export function SimpleField({
+  id,
   label,
   value,
   onChange,
@@ -27,8 +29,6 @@ export function SimpleField({
     if (type === "number") {
       if (val !== "" && Number(val) < 0) return;
 
-      if (required && val === "") return;
-
       onChange(val);
       return;
     }
@@ -37,14 +37,16 @@ export function SimpleField({
 
   return (
     <div className="grid gap-2">
-      <Label>{label}</Label>
+      <Label htmlFor={id}>{label}</Label>
       <Input
+        id={id}
         type={type}
         value={value}
         placeholder={placeholder}
         required={required}
         min={min}
         onChange={handleChange}
+        className="bg-neutral-200 dark:bg-neutral-800"
       />
     </div>
   );

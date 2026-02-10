@@ -1,15 +1,10 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getUIErrorFromFirebaseError } from "@/lib/firebase";
 
 type Props = {
   title: string;
@@ -18,17 +13,30 @@ type Props = {
   onSubmit: (email: string, password: string) => Promise<void>;
 };
 
-const emailRegex =
-  /^(?=.{1,254}$)(?=.{1,64}@)[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function AuthCard({ title, buttonText, error, onSubmit }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [localError, setLocalError] = useState<string>("");
-  
+  const [localError, setLocalError] = useState("");
 
-  const uiError = error || localError;
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLocalError("");
 
+    if (!email.trim()) return setLocalError("ui/empty-email");
+
+    if (!emailRegex.test(email.trim()))
+      return setLocalError("auth/invalid-email");
+
+    if (!password.trim()) return setLocalError("ui/empty-password");
+
+    await onSubmit(email.trim(), password);
+  }
+  const errorCodeToShow = localError || error || "";
+  const errorMessage = errorCodeToShow
+    ? getUIErrorFromFirebaseError(errorCodeToShow)
+    : "";
 
   return (
     <div className="w-full flex justify-center items-center pt-16">
@@ -38,12 +46,7 @@ export function AuthCard({ title, buttonText, error, onSubmit }: Props) {
         </CardHeader>
 
         <CardContent>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              await onSubmit(email, password);
-            }}
-          >
+          <form onSubmit={handleSubmit} noValidate>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
@@ -54,6 +57,7 @@ export function AuthCard({ title, buttonText, error, onSubmit }: Props) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="bg-neutral-200 dark:bg-neutral-800"
                 />
               </div>
 
@@ -66,23 +70,20 @@ export function AuthCard({ title, buttonText, error, onSubmit }: Props) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  className="bg-neutral-200 dark:bg-neutral-800"
                 />
               </div>
             </div>
+
+            <Button type="submit" className="w-full mt-8 ">
+              {buttonText}
+            </Button>
+
+            {errorMessage ? (
+              <p className="mt-4 text-sm text-red-600">{errorMessage}</p>
+            ) : null}
           </form>
-
-          {uiError ? <p className="mt-4 text-sm text-red-600">{uiError}</p> : null}
         </CardContent>
-
-        <CardFooter className="flex-col gap-2">
-          <Button
-            type="submit"
-            className="w-full"
-             onClick={() => onSubmit(email, password)}
-          >
-            {buttonText}
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );

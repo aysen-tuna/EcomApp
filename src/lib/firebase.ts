@@ -6,7 +6,6 @@ import {
   setDoc,
   getDoc,
   serverTimestamp,
-  updateDoc
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -24,6 +23,7 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 
 export const getUIErrorFromFirebaseError = (firebaseErrorCode: string) => {
+  if (!firebaseErrorCode) return "";
   switch (firebaseErrorCode) {
     case "auth/email-already-in-use":
       return "This email address is already in use!";
@@ -37,29 +37,32 @@ export const getUIErrorFromFirebaseError = (firebaseErrorCode: string) => {
     case "auth/weak-password":
       return "Password should be at least 8 characters long.";
 
+    case "ui/empty-email":
+      return "Please enter your email.";
+    case "ui/empty-password":
+      return "Please enter your password.";
+
     default:
       return "An error occured";
   }
 };
-
-interface FirestoreResponse {
-  success: boolean;
-  error?: FirebaseError;
-}
 
 export interface FirebaseError {
   code: string;
   message: string;
 }
 
-
-export async function createUser(email: string, userId: string) {
+export async function createUser(
+  email: string,
+  uid: string,
+  theme: "light" | "dark" | "system"
+) {
   await setDoc(
-    doc(db, "users", userId),
+    doc(db, "users", uid),
     {
       email,
-      userID: userId,
-      theme: "system",
+      uid,
+      theme,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },

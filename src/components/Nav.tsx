@@ -7,12 +7,21 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "@/app/AuthProvider";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export function Nav() {
-  const { user, logout, loading, isAdmin } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
+  const router = useRouter();
 
   return (
     <nav className="flex w-full justify-between items-center">
@@ -38,21 +47,32 @@ export function Nav() {
 
                 {isAdmin && (
                   <NavigationMenuItem>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        href="/admin/products/new"
-                        className="px-3 py-1 rounded-lg font-semibold text-amber-500 hover:bg-slate-300 dark:hover:bg-neutral-700"
-                      >
-                        Admin
-                      </Link>
-                    </NavigationMenuLink>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="px-3 py-1 rounded-lg font-semibold text-amber-500 
+          hover:bg-neutral-300 dark:hover:bg-neutral-800"
+                        >
+                          Admin ▾
+                        </button>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuItem asChild>
+                          <Link href="/admin/products/new">Add Product</Link>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </NavigationMenuItem>
                 )}
 
                 <NavigationMenuItem>
                   <Button
                     type="button"
-                    onClick={logout}
+                    onClick={async () => {
+                      await logout();
+                      router.replace("/");
+                    }}
                     className="px-3 py-1 border rounded-lg dark:border-slate-600 border-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700"
                   >
                     Logout

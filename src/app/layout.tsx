@@ -40,7 +40,9 @@ export default function RootLayout({
             <header className="border-b px-4 py-2 bg-neutral-200 dark:bg-neutral-900">
               <Nav />
             </header>
-            <main className="min-h-dvh flex items-center justify-center">{children}</main>
+            <main className="min-h-dvh flex items-center justify-center">
+              {children}
+            </main>
           </AuthProvider>
         </ThemeProvider>
       </body>
