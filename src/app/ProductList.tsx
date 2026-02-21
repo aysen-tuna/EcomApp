@@ -7,7 +7,7 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { deleteProduct } from "@/app/actions/admin/products/delete";
-import { addPriceToCart, getCartPrices } from "@/lib/cart";
+import { addPriceToCart, getCartCount, onCartChange } from "@/lib/cart";
 
 type Product = {
   id: string;
@@ -20,8 +20,6 @@ type Product = {
 };
 
 export default function ProductList() {
-  const { loading, isAdmin } = useAuth();
-
   const [products, setProducts] = useState<Product[]>([]);
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -31,9 +29,14 @@ export default function ProductList() {
 
   const [cartCount, setCartCount] = useState(0);
 
+  const { user, loading, isAdmin } = useAuth();
+  const uid = user?.uid;
+
   useEffect(() => {
-    setCartCount(getCartPrices().length);
-  }, []);
+    const update = () => setCartCount(getCartCount(uid));
+    update();
+    return onCartChange(update);
+  }, [uid]);
 
   async function load() {
     const snap = await getDocs(collection(db, "products"));
@@ -85,27 +88,28 @@ export default function ProductList() {
             >
               <p className="font-semibold mb-4">{p.title}</p>
 
-              <div className="my-4 flex flex-col-reverse items-end">
-                <Button
-                  type="button"
-                  disabled={!p.stripePriceId}
-                  className="bg-neutral-100 text-black hover:bg-white
+              {user && (
+                <div className="my-4 flex flex-col-reverse items-end">
+                  <Button
+                    type="button"
+                    disabled={!p.stripePriceId}
+                    className="bg-neutral-100 text-black hover:bg-white
              dark:bg-neutral-200 dark:text-black dark:hover:bg-neutral-300"
-                  onClick={() => {
-                    if (!p.stripePriceId) return;
-                    addPriceToCart(p.stripePriceId);
-                    setCartCount((prev) => prev + 1);
-                    setAddedId(p.id);
-                    setTimeout(() => setAddedId(null), 1500);
-                  }}
-                >
-                  Add to Cart
-                </Button>
+                    onClick={() => {
+                      if (!p.stripePriceId) return;
+                      addPriceToCart(p.stripePriceId, uid);
+                      setAddedId(p.id);
+                      setTimeout(() => setAddedId(null), 1500);
+                    }}
+                  >
+                    Add to Cart
+                  </Button>
 
-                {addedId === p.id && (
-                  <p className="text-xs text-white mt-2">Added!!!</p>
-                )}
-              </div>
+                  {addedId === p.id && (
+                    <p className="text-xs text-white mt-2">Added!!!</p>
+                  )}
+                </div>
+              )}
 
               {img ? (
                 <div className="relative mb-3 bg-neutral-100 dark:bg-neutral-900">
