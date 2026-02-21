@@ -55,36 +55,42 @@ export function ProductForm({
       </h2>
 
       <SimpleField
+        id="title"
         label="Title"
         value={values.title}
         onChange={(v) => onChange({ title: v })}
       />
 
       <SimpleField
+        id="description"
         label="Description"
         value={values.description}
         onChange={(v) => onChange({ description: v })}
       />
 
       <SimpleField
+        id="brand"
         label="Brand"
         value={values.brand}
         onChange={(v) => onChange({ brand: v })}
       />
 
       <SimpleField
+        id="serialNumber"
         label="Serial Number"
         value={values.serialNumber}
         onChange={(v) => onChange({ serialNumber: v })}
       />
 
       <SimpleField
+        id="category"
         label="Category"
         value={values.category}
         onChange={(v) => onChange({ category: v })}
       />
 
       <SimpleField
+        id="price"
         label="Price (EUR)"
         type="number"
         value={values.price}
@@ -92,6 +98,7 @@ export function ProductForm({
       />
 
       <SimpleField
+        id="taxRate"
         label="Tax Rate (%)"
         type="number"
         value={values.taxRate}
@@ -99,13 +106,13 @@ export function ProductForm({
       />
 
       <SimpleField
+        id="stock"
         label="Stock"
         type="number"
         value={values.stock}
         onChange={(v) => onChange({ stock: v })}
       />
 
-      {/* Images (UI only) */}
       <div className="grid gap-2">
         <Label>Images</Label>
 
@@ -157,6 +164,7 @@ export function ProductForm({
       </div>
 
       <SimpleField
+        id="discountRate"
         label="Discount Rate (%)"
         type="number"
         value={values.discountRate}
@@ -165,12 +173,17 @@ export function ProductForm({
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-      <Button type="submit" className="w-full" disabled={saving || uploading}>
+      <Button
+        type="submit"
+        name="addEditProduct"
+        className="w-full"
+        disabled={saving || uploading}
+      >
         {saving
           ? "Saving..."
           : mode === "create"
-          ? "Save Product"
-          : "Update Product"}
+            ? "Save Product"
+            : "Update Product"}
       </Button>
     </form>
   );

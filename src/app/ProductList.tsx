@@ -7,6 +7,7 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { deleteProduct } from "@/app/actions/admin/products/delete";
+import { addPriceToCart, getCartCount, onCartChange } from "@/lib/cart";
 
 type Product = {
   id: string;
@@ -15,16 +16,27 @@ type Product = {
   stock: number;
   price?: { amount: number; currency: "EUR" };
   imageUrls?: string[];
+  stripePriceId?: string;
 };
 
 export default function ProductList() {
-  const { loading, isAdmin } = useAuth();
-
   const [products, setProducts] = useState<Product[]>([]);
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [addedId, setAddedId] = useState<string | null>(null);
 
   const [activeImage, setActiveImage] = useState<Record<string, number>>({});
+
+  const [cartCount, setCartCount] = useState(0);
+
+  const { user, loading, isAdmin } = useAuth();
+  const uid = user?.uid;
+
+  useEffect(() => {
+    const update = () => setCartCount(getCartCount(uid));
+    update();
+    return onCartChange(update);
+  }, [uid]);
 
   async function load() {
     const snap = await getDocs(collection(db, "products"));
@@ -74,7 +86,30 @@ export default function ProductList() {
               key={p.id}
               className="w-full max-w-sm rounded-md border bg-neutral-200 dark:bg-neutral-800 p-4 mx-auto"
             >
-              <p className="font-semibold mb-8">{p.title}</p>
+              <p className="font-semibold mb-4">{p.title}</p>
+
+              {user && (
+                <div className="my-4 flex flex-col-reverse items-end">
+                  <Button
+                    type="button"
+                    disabled={!p.stripePriceId}
+                    className="bg-neutral-100 text-black hover:bg-white
+             dark:bg-neutral-200 dark:text-black dark:hover:bg-neutral-300"
+                    onClick={() => {
+                      if (!p.stripePriceId) return;
+                      addPriceToCart(p.stripePriceId, uid);
+                      setAddedId(p.id);
+                      setTimeout(() => setAddedId(null), 1500);
+                    }}
+                  >
+                    Add to Cart
+                  </Button>
+
+                  {addedId === p.id && (
+                    <p className="text-xs text-white mt-2">Added!!!</p>
+                  )}
+                </div>
+              )}
 
               {img ? (
                 <div className="relative mb-3 bg-neutral-100 dark:bg-neutral-900">
@@ -126,7 +161,7 @@ export default function ProductList() {
                   <p>
                     Stock: <span className="font-medium">{p.stock ?? "-"}</span>
                   </p>
-                  {images.length > 1 ? (
+                  {images.length >= 1 ? (
                     <p className="opacity-70">
                       Image {idx + 1}/{images.length}
                     </p>

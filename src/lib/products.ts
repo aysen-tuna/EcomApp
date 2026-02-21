@@ -26,4 +26,7 @@ export type ProductInput = {
   createdBy: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
+
+  stripeProductId: string;
+  stripePriceId: string;
 };

@@ -7,11 +7,14 @@ export function buildProductRaw(values: ProductValues) {
     brand: values.brand,
     serialNumber: values.serialNumber,
     category: values.category,
-    price: { amount: values.price, currency: "EUR" as const },
-    taxRate: values.taxRate,
-    stock: values.stock,
+    price: { amount: Number(values.price), currency: "EUR" as const },
+    taxRate: Number(values.taxRate),
+    stock: Number(values.stock),
     draft: values.draft,
-    discount: values.discountRate ? { rate: values.discountRate } : undefined,
+    discount: values.discountRate
+      ? { rate: Number(values.discountRate) }
+      : undefined,
+
     imageUrls: values.imageUrls,
   };
 }
