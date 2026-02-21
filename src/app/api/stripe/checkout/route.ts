@@ -6,19 +6,18 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
 
     const pricesRaw = formData.get("prices");
-     const cartRaw = formData.get("cart");
+    const cartRaw = formData.get("cart");
     const userIdRaw = formData.get("userId");
 
     if (!pricesRaw || typeof pricesRaw !== "string") {
       return NextResponse.json({ error: "Missing prices" }, { status: 400 });
     }
 
-     if (!cartRaw || typeof cartRaw !== "string") {
+    if (!cartRaw || typeof cartRaw !== "string") {
       return NextResponse.json({ error: "Missing cart" }, { status: 400 });
     }
 
     const userId = typeof userIdRaw === "string" ? userIdRaw : "guest";
-
 
     const prices = pricesRaw
       .split(",")

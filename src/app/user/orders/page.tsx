@@ -36,7 +36,9 @@ export default function UserOrdersPage() {
             key={i}
             className="border p-4 rounded bg-neutral-100 dark:bg-neutral-900"
           >
-            <p>Status: <b>{o.status}</b></p>
+            <p>
+              Status: <b>{o.status}</b>
+            </p>
             <p>Total: €{(o.amountTotal / 100).toFixed(2)}</p>
           </div>
         ))
