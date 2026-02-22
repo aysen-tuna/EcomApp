@@ -1,35 +1,26 @@
-# Ecom Project
+🛍️ EcomApp
 
-Modern e-commerce application with authentication, theme management, admin-only product management, image uploads, and automated testing — built using Next.js, Firebase, Vercel Blob, Stripe, Playwright, and Shadcn UI.
+Modern full-stack e-commerce application built with Next.js, Firebase, Stripe, and Vercel Blob.
 
----
+The app supports authentication, admin product management, Stripe payments, and real-time order tracking.
 
-### Authentication
-- User **Signup**
-- User **Login**
-- User **Logout**
-- Email & password validation
-- Error messages are shown clearly
-- Errors automatically reset when the page changes
-- Logged-in users are automatically redirected
-- Admin role stored in Firestore admin === true
+✨ Features
+🔐 Authentication
+	•	Email & password signup/login
+	•	Secure logout
+	•	Automatic redirect for authenticated users
+	•	Clear error handling
+	•	Admin role stored in Firestore (admin: true)
 
----
+🎨 Theme Management
+	•	Powered by next-themes
+	•	User preference saved in Firestore
+	•	Auto-applied on login
+	•	Switch anytime from navbar
 
-### Theme Management
-- Uses **next-themes**
-- Each user’s theme preference (**light / dark / system**) is saved in Firestore
-- On login, the saved theme is applied automatically
-- Users can change the theme anytime from the navbar
+🛠️ Admin Panel
 
----
-
-### Admin Panel
-Only users with `admin: true` in Firestore can access admin routes.
-
-#### Add New Product (Admin Only)
-
-Admin can create a new product with the following fields:
+Only users with admin: true can access admin routes.
 
 ```ts
 {
@@ -43,165 +34,123 @@ Admin can create a new product with the following fields:
   stock: number,
   draft: boolean,
   discount?: { rate: number },
-  imageUrls: string[],
-  createdBy: string,
+   imageUrls: string[];
+  createdBy: string;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+  stripeProductId: string;
+  stripePriceId: string;
 }
 ```
 
-### Image Upload
-- Admin can upload single or multiple images
-- Images are uploaded to Vercel Blob Storage
-- Uploaded image URLs are stored in Firestore
-- At least one image is required
+🖼️ Image Upload
+	•	Single or multiple image upload
+	•	Stored in Vercel Blob
+	•	URLs saved to Firestore
+	•	Minimum one image required
+	•	Removed images are deleted from Blob
 
----
+✏️ Edit Product
+	•	Form prefilled with existing data
+	•	Add/remove images
+	•	Firestore updates automatically
+	•	Blob cleanup handled
 
-### Edit Product
-- Product form is pre-filled with existing data
-- Images can be removed or new images added
-- When images are removed during edit:
-  - They are automatically deleted from Blob storage
-- Product data is updated in Firestore
+🗑️ Delete Product
+When admin deletes a product:
+	•	Firestore document removed
+	•	Related Blob images deleted
 
----
-
-### Delete Product
-- Admin can delete a product from the admin list
-- On deletion:
-  - Product document is removed from Firestore
-  - All associated images are deleted from Blob storage
-
----
-
-### Admin Product List
-- Displays all products
-- Product cards include:
-  - Title
-  - Price
-  - Stock
-  - Serial number
-  - Image preview
-- Supports image carousel for products with multiple images
-- Admin actions:
-  - Edit product
-  - Delete product (with confirmation)
-
----
-
-### Validation
-
-#### UI Validation
-- Price must be greater than 0
-- Stock cannot be negative
-- Required fields must be filled
-- Discount is optional
-
-#### Backend Validation
-- All inputs are validated again using Zod
-- Invalid data is rejected before writing to Firestore
-
----
-
-### Payments (Stripe)
-
-Stripe is used for checkout and payment processing.
-
+📦 Cart & Checkout
 Flow:
-- User adds products to cart
-- Stripe Checkout Session created
-- User completes payment
-- Stripe webhook confirms payment
-- Order saved + stock updated
+	1.	User adds products to cart
+	2.	Stripe Checkout Session created
+	3.	User completes payment
+	4.	Stripe webhook fires
+	5.	Order saved to Firestore
+	6.	Product stock decreased
+	7.	Order appears in My Orders
 
----
+💳 Stripe Integration
+	•	Secure Checkout Sessions
+	•	Session cookies for user tracking
+	•	Webhook-driven order creation
+	•	Stock auto-decrement after payment
+	•	Cart auto-cleared on success page
 
-### Testing
 
-## Unit Tests (Jest)
+🧪 Testing
 
-Used for:
-- Zod validation
-- Utility functions
-- Price / tax calculations
+Unit Tests (Jest)
 
-```bash
-npm run test
-```
+Covers:
+	•	Zod validation
+	•	Utility functions
+	•	Price calculations
+Run:npm run test
 
----
-
-## End-to-End Tests (Playwright)
-
+E2E Tests (Playwright)
 Covered flows:
-- Admin creates product (full form + image upload)
-- Upload failure shows error message
+	•	Admin creates product
+	•	Image upload validation
+	•	Error handling
 
-Run:
-
-```bash
-npx playwright test
+  Run:npx playwright test
 npx playwright test --ui
-```
 
----
+
 
 ```js
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
     match /users/{uid} {
       allow read:   if request.auth != null && request.auth.uid == uid;
       allow create: if request.auth != null && request.auth.uid == uid;
       allow update: if request.auth != null && request.auth.uid == uid;
       allow delete: if false;
     }
-
+	match /users/{uid}/orders/{orderId} {
+  allow read: if request.auth != null && request.auth.uid == uid;
+  allow create: if request.auth != null && request.auth.uid == uid;
+  allow update: if request.auth != null && request.auth.uid == uid;
+  allow delete: if false;
+}
+    function isAdmin() {
+      return request.auth != null
+             && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+             && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
     match /products/{productId} {
       allow read: if true;
-
-      function isAdmin() {
-        return request.auth != null
-          && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
-      }
-
-      allow create: if isAdmin();
-      allow update: if isAdmin();
-      allow delete: if isAdmin();
+      allow create: if  true;
+      allow update: if  true;
+      allow delete: if  true;
     }
   }
 }
-```
 
----
 
-### Tech Stack
-- Next.js 14 (App Router)
-- React 18
-- TypeScript
-- Firebase Authentication
-- Firestore
-- Vercel Blob Storage
-- Stripe
-- Zod
-- Shadcn/UI
-- Tailwind CSS
-- next-themes
-- Playwright
-- Jest
+🧱 Tech Stack
+	•	Next.js (App Router)
+	•	React
+	•	TypeScript
+	•	Firebase Auth
+	•	Firestore
+	•	Stripe
+	•	Vercel Blob
+	•	Zod
+	•	Tailwind CSS
+	•	shadcn/ui
+	•	next-themes
+	•	Playwright
+	•	Jest
 
----
-
-### How to Run Locally
-
-```bash
-npm install
-npm run dev
-```
+🚀 Local Development
+    npm install
+    npm run dev
 
 Environment variables required:
-
 ```bash
 NEXT_PUBLIC_FIREBASE_API_KEY=
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
@@ -219,3 +168,4 @@ STRIPE_SECRET_KEY=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
 STRIPE_WEBHOOK_SECRET=
 ```
+⚠️ Never commit .env files to GitHub.
