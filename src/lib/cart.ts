@@ -1,6 +1,9 @@
 const EVT = "cart:changed";
 
-const PREFIX = "cartPrices_v1_";
+const PREFIX = "cart_v2_";
+
+export type CartItem = { priceId: string; qty: number };
+
 function getKey(userId?: string) {
   return `${PREFIX}${userId ?? "guest"}`;
 }
@@ -10,7 +13,7 @@ function emit() {
   window.dispatchEvent(new Event(EVT));
 }
 
-function safeRead(key: string): string[] {
+function safeRead(key: string): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(key);
@@ -22,38 +25,46 @@ function safeRead(key: string): string[] {
   }
 }
 
-export function getCartPrices(userId?: string): string[] {
-  const key = getKey(userId);
-  return safeRead(key);
+export function getCartItems(userId?: string): CartItem[] {
+  return safeRead(getKey(userId));
 }
 
-export function saveCartPrices(prices: string[], userId?: string) {
+export function saveCartItems(items: CartItem[], userId?: string) {
   if (typeof window === "undefined") return;
-  const key = getKey(userId);
-  localStorage.setItem(key, JSON.stringify(prices));
+  localStorage.setItem(getKey(userId), JSON.stringify(items));
   emit();
 }
 
 export function addPriceToCart(priceId: string, userId?: string) {
-  const current = getCartPrices(userId);
-  current.push(priceId);
-  saveCartPrices(current, userId);
+  const items = getCartItems(userId);
+  const found = items.find((x) => x.priceId === priceId);
+
+  if (found) {
+    found.qty += 1;
+  } else {
+    items.push({ priceId, qty: 1 });
+  }
+
+  saveCartItems(items, userId);
 }
 
 export function removeOneFromCart(priceId: string, userId?: string) {
-  const current = getCartPrices(userId);
-  const idx = current.indexOf(priceId);
-  if (idx === -1) return;
-  current.splice(idx, 1);
-  saveCartPrices(current, userId);
+  const items = getCartItems(userId);
+  const found = items.find((x) => x.priceId === priceId);
+  if (!found) return;
+
+  found.qty -= 1;
+
+  const cleaned = items.filter((x) => x.qty > 0);
+  saveCartItems(cleaned, userId);
 }
 
 export function clearCart(userId?: string) {
-  saveCartPrices([], userId);
+  saveCartItems([], userId);
 }
 
 export function getCartCount(userId?: string) {
-  return getCartPrices(userId).length;
+  return getCartItems(userId).reduce((sum, x) => sum + x.qty, 0);
 }
 
 export function onCartChange(cb: () => void) {

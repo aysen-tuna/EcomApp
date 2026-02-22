@@ -2,21 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/app/AuthProvider";
-import { db } from "@/lib/firebase";
-import { collection, onSnapshot } from "firebase/firestore";
+import { listenUserOrders, type OrderDoc } from "@/lib/orders";
 
 export default function UserOrdersPage() {
   const { user, loading } = useAuth();
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<OrderDoc[]>([]);
 
   useEffect(() => {
     if (!user) return;
 
-    const ref = collection(db, "users", user.uid, "orders");
-
-    const unsubscribe = onSnapshot(ref, (snapshot) => {
-      setOrders(snapshot.docs.map((doc) => doc.data()));
-    });
+    const unsubscribe = listenUserOrders(user.uid, setOrders);
 
     return unsubscribe;
   }, [user]);
@@ -39,7 +34,7 @@ export default function UserOrdersPage() {
             <p>
               Status: <b>{o.status}</b>
             </p>
-            <p>Total: €{(o.amountTotal / 100).toFixed(2)}</p>
+            <p>Total: €{(((o.amountTotal ?? 0) as number) / 100).toFixed(2)}</p>
           </div>
         ))
       )}

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { useAuth } from "@/app/AuthProvider";
-import { updateUserTheme } from "@/lib/firebase";
+import { updateUserTheme } from "@/lib/firebase/firebase";
 
 export function ModeToggle() {
   const { setTheme } = useTheme();

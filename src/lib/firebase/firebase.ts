@@ -55,7 +55,7 @@ export interface FirebaseError {
 export async function createUser(
   email: string,
   uid: string,
-  theme: "light" | "dark" | "system"
+  theme: "light" | "dark" | "system",
 ) {
   await setDoc(
     doc(db, "users", uid),
@@ -66,7 +66,7 @@ export async function createUser(
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     },
-    { merge: true }
+    { merge: true },
   );
 }
 
@@ -77,11 +77,11 @@ export async function getUserDoc(uid: string) {
 
 export async function updateUserTheme(
   uid: string,
-  theme: "light" | "dark" | "system"
+  theme: "light" | "dark" | "system",
 ) {
   await setDoc(
     doc(db, "users", uid),
     { theme, updatedAt: serverTimestamp() },
-    { merge: true }
+    { merge: true },
   );
 }

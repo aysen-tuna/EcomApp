@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   if (process.env.NODE_ENV !== "development") {
     return NextResponse.json(
       { error: "Uploads disabled for demo" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     if (files.length > MAX_FILES) {
       return NextResponse.json(
         { error: `Maximum ${MAX_FILES} files allowed` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       if (!ALLOWED_TYPES.includes(file.type)) {
         return NextResponse.json(
           { error: "Invalid file type" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
   } catch (e: any) {
     return NextResponse.json(
       { error: e?.message ?? "Upload error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

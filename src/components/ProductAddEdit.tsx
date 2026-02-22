@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/AuthProvider";
 
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 import { ProductForm, type ProductValues } from "@/components/ProductForm";
@@ -122,14 +122,12 @@ export function ProductAddEdit(props: Props) {
     setSaving(true);
     try {
       if (props.mode === "create") {
-        const { createProduct } = await import(
-          "@/app/actions/admin/products/new"
-        );
+        const { createProduct } =
+          await import("@/app/actions/admin/products/new");
         await createProduct(user.uid, raw);
       } else {
-        const { editProduct } = await import(
-          "@/app/actions/admin/products/edit"
-        );
+        const { editProduct } =
+          await import("@/app/actions/admin/products/edit");
         await editProduct(user.uid, props.productId, raw);
       }
 

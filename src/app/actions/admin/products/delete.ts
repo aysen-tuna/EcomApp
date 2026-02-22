@@ -2,7 +2,7 @@
 
 import { del } from "@vercel/blob";
 import { deleteDoc, doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/firebase/firebase";
 import { revalidatePath } from "next/cache";
 
 export async function deleteProduct(productId: string) {

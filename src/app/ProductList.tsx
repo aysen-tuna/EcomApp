@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/app/AuthProvider";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/firebase/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { deleteProduct } from "@/app/actions/admin/products/delete";
@@ -52,7 +52,7 @@ export default function ProductList() {
   function nextImage(
     productId: string,
     images: string[],
-    dir: "next" | "prev"
+    dir: "next" | "prev",
   ) {
     if (images.length < 2) return;
 

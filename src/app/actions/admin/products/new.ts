@@ -1,7 +1,7 @@
 "use server";
 
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/firebase/firebase";
 import { productSchema } from "@/lib/productSchema";
 import { revalidatePath } from "next/cache";
 import { stripe } from "@/lib/stripe";
