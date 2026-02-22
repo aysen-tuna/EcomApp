@@ -37,7 +37,7 @@ export function Nav() {
   }, [uid]);
 
   return (
-    <nav className="flex w-full justify-between items-center">
+    <nav className="flex w-full flex-wrap justify-between items-center">
       <h1 className="text-lg font-bold ">
         <Link href="/" prefetch={false}>
           Ecom
@@ -73,6 +73,12 @@ export function Nav() {
                       </span>
                     ) : null}
                   </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
+                    <Link href="/user/orders">My Orders</Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
 
                 {isAdmin && (

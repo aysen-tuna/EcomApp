@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/firebase/firebase";
 import { Button } from "@/components/ui/button";
-import { addPriceToCart, getCartPrices, removeOneFromCart } from "@/lib/cart";
+import { addPriceToCart, getCartItems, removeOneFromCart } from "@/lib/cart";
 import { useAuth } from "@/app/AuthProvider";
+import type { CartItem } from "@/lib/cart";
 
 type Product = {
   id: string;
@@ -32,7 +33,7 @@ export default function CheckoutPage() {
   const uid = user?.uid;
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [cartPrices, setCartPrices] = useState<string[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -44,31 +45,18 @@ export default function CheckoutPage() {
   }, []);
 
   useEffect(() => {
-    setCartPrices(getCartPrices(uid));
+    setCartItems(getCartItems(uid));
   }, [uid]);
 
-  const cartRows: CartRow[] = useMemo(() => {
-    const rows: CartRow[] = [];
+  const cartRows: CartRow[] = cartItems.map((item) => ({
+    priceId: item.priceId,
+    quantity: item.qty,
+    product: products.find((p) => p.stripePriceId === item.priceId),
+  }));
 
-    for (const priceId of cartPrices) {
-      const existing = rows.find((r) => r.priceId === priceId);
-      if (existing) {
-        existing.quantity += 1;
-      } else {
-        rows.push({ priceId, quantity: 1 });
-      }
-    }
+  const totalCount = cartItems.reduce((s, x) => s + x.qty, 0);
 
-    for (const row of rows) {
-      row.product = products.find((p) => p.stripePriceId === row.priceId);
-    }
-
-    return rows;
-  }, [cartPrices, products]);
-
-  const totalCount = cartPrices.length;
-
-  const grandTotal = useMemo(() => {
+  const grandTotal = (() => {
     let sum = 0;
 
     for (const row of cartRows) {
@@ -77,19 +65,17 @@ export default function CheckoutPage() {
     }
 
     return sum;
-  }, [cartRows]);
+  })();
 
-  const cartPayload: CartPayloadItem[] = useMemo(() => {
-    return cartRows
-      .map((row) => ({
-        productId: row.product?.id ?? "",
-        qty: row.quantity,
-      }))
-      .filter((x) => Boolean(x.productId) && x.qty > 0);
-  }, [cartRows]);
+  const cartPayload: CartPayloadItem[] = cartRows
+    .map((row) => ({
+      productId: row.product?.id ?? "",
+      qty: row.quantity,
+    }))
+    .filter((x) => Boolean(x.productId) && x.qty > 0);
 
   function syncCart() {
-    setCartPrices(getCartPrices(uid));
+    setCartItems(getCartItems(uid));
   }
 
   function handleMinus(priceId: string) {
@@ -121,13 +107,11 @@ export default function CheckoutPage() {
           method="POST"
           onSubmit={() => setBusy(true)}
         >
-          <input type="hidden" name="prices" value={cartPrices.join(",")} />
           <input
             type="hidden"
             name="cart"
             value={JSON.stringify(cartPayload)}
           />
-          <input type="hidden" name="userId" value={uid ?? ""} />
 
           <Button
             type="submit"

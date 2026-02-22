@@ -1,7 +1,7 @@
 "use server";
 
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/firebase/firebase";
 import { del } from "@vercel/blob";
 import { productSchema } from "@/lib/productSchema";
 import { revalidatePath } from "next/cache";
@@ -10,7 +10,7 @@ import { stripe } from "@/lib/stripe";
 export async function editProduct(
   uid: string,
   productId: string,
-  raw: unknown
+  raw: unknown,
 ) {
   if (!uid) throw new Error("Missing uid");
   if (!productId) throw new Error("Missing productId");
@@ -82,7 +82,7 @@ export async function editProduct(
       createdBy: prev?.createdBy ?? uid,
       updatedAt: serverTimestamp(),
     },
-    { merge: true }
+    { merge: true },
   );
 
   revalidatePath("/");

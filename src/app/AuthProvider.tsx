@@ -8,7 +8,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { auth, getUserDoc, createUser } from "@/lib/firebase";
+import { auth, getUserDoc, createUser } from "@/lib/firebase/firebase";
 import { useTheme } from "next-themes";
 
 type ThemePreference = "light" | "dark" | "system";
@@ -80,6 +80,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await createUser(email, cred.user.uid, currentTheme);
       setUser(cred.user);
+
+      const idToken = await cred.user.getIdToken();
+      const res = await fetch("/api/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (!res.ok) return "session-failed";
       return "ok";
     } catch (e: any) {
       return e?.code ?? "auth/unknown";
@@ -88,7 +97,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login: AuthContextType["login"] = async (email, password) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+
+      const idToken = await cred.user.getIdToken();
+      const res = await fetch("/api/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
+
+      if (!res.ok) return "session-failed";
       return "ok";
     } catch (e: any) {
       return e?.code ?? "auth/unknown";
