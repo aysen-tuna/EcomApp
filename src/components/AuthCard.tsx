@@ -39,7 +39,7 @@ export function AuthCard({ title, buttonText, error, onSubmit }: Props) {
     : "";
 
   return (
-    <div className="w-full flex justify-center items-center pt-16">
+    <div className="w-full flex min-h-[calc(100dvh-120px)] justify-center items-center pt-16">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>{title}</CardTitle>

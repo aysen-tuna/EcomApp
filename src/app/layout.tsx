@@ -40,9 +40,37 @@ export default function RootLayout({
             <header className="border-b px-4 py-2 bg-neutral-200 dark:bg-neutral-900">
               <Nav />
             </header>
-            <main className="min-h-dvh flex items-center justify-center">
+            {/* <main className="min-h-dvh flex items-center justify-center"> */}
+            {/* {children}
+            </main> */}
+            <main className="min-h-dvh">
+              {/* <div className="mx-auto w-full px-4 py-8">{children}</div> */}
               {children}
             </main>
+
+            <footer className="mt-12 border-t border-black/10 dark:border-white/10">
+              <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-black/60 dark:text-white/60 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <span>ECOM © {new Date().getFullYear()}</span>
+                <span>Next.js • Firebase • Stripe</span>
+                <div className="flex gap-4">
+                  <a
+                    className="hover:underline"
+                    href="https://github.com/aysen-tuna"
+                    target="_blank"
+                  >
+                    GitHub
+                  </a>
+                  <a
+                    className="hover:underline"
+                    href="https://www.linkedin.com"
+                    target="_blank"
+                  >
+                    LinkedIn
+                  </a>
+                </div>
+              </div>
+            </footer>
+            
           </AuthProvider>
         </ThemeProvider>
       </body>

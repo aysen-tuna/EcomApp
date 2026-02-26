@@ -18,10 +18,9 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "@/app/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-
 import { useEffect, useState } from "react";
-
 import { getCartCount, onCartChange } from "@/lib/cart";
+import { ShoppingCart, ChevronDown } from "lucide-react";
 
 export function Nav() {
   const { user, logout, isAdmin } = useAuth();
@@ -50,35 +49,36 @@ export function Nav() {
             {user ? (
               <>
                 <NavigationMenuItem>
-                  <Link
-                    href={cartCount > 0 ? "/checkout" : "#"}
-                    className="relative flex items-center justify-center"
-                    aria-label="Go to checkout"
-                  >
-                    <div
-                      className="flex h-9 w-9 items-center justify-center rounded-full
-                      bg-neutral-300 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100
-                      font-semibold uppercase select-none border border-neutral-400 dark:border-neutral-700"
-                    >
-                      {(user.email?.[0] ?? "U").toUpperCase()}
-                    </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center gap-0.5">
+                        <div
+                          className="flex h-9 w-9 items-center justify-center rounded-full
+                          bg-neutral-300 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100
+                          font-semibold uppercase border border-neutral-400 dark:border-neutral-700"
+                        >
+                          {(user.email?.[0] ?? "U").toUpperCase()}
+                        </div>
 
-                    {cartCount > 0 ? (
-                      <span
-                        className="absolute -top-2 -right-2 min-w-5 h-5 px-1
-                        rounded-full bg-red-600 text-white text-xs
-                        flex items-center justify-center leading-none"
+                        <ChevronDown className="h-4 w-4 opacity-70" />
+                      </button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end" className="w-44">
+                      <DropdownMenuItem asChild>
+                        <Link href="/user/orders">My Orders</Link>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={async () => {
+                          await logout();
+                          router.replace("/");
+                        }}
                       >
-                        {cartCount > 99 ? "99+" : cartCount}
-                      </span>
-                    ) : null}
-                  </Link>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link href="/user/orders">My Orders</Link>
-                  </NavigationMenuLink>
+                        Logout
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </NavigationMenuItem>
 
                 {isAdmin && (
@@ -86,10 +86,11 @@ export function Nav() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
-                          className="px-3 py-1 rounded-lg font-semibold text-amber-500 
+                          className="flex items-center gap-0.5 px-3 py-1 rounded-lg font-semibold text-amber-500 
           hover:bg-neutral-300 dark:hover:bg-neutral-800"
                         >
-                          Admin ▾
+                          Admin
+                          <ChevronDown className="h-4 w-4 opacity-70" />
                         </button>
                       </DropdownMenuTrigger>
 
@@ -103,16 +104,23 @@ export function Nav() {
                 )}
 
                 <NavigationMenuItem>
-                  <Button
-                    type="button"
-                    onClick={async () => {
-                      await logout();
-                      router.replace("/");
-                    }}
-                    className="px-3 py-1 border rounded-lg dark:border-slate-600 border-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700"
+                  <Link
+                    href={cartCount > 0 ? "/checkout" : "#"}
+                    className="relative flex items-center justify-center"
+                    aria-label="Go to checkout"
                   >
-                    Logout
-                  </Button>
+                    <ShoppingCart className="h-6 w-6" />
+
+                    {cartCount > 0 && (
+                      <span
+                        className="absolute -top-2 -right-2 min-w-5 h-5 px-1
+                        rounded-full bg-red-600 text-white text-xs
+                        flex items-center justify-center leading-none"
+                      >
+                        {cartCount > 99 ? "99+" : cartCount}
+                      </span>
+                    )}
+                  </Link>
                 </NavigationMenuItem>
               </>
             ) : (
@@ -132,7 +140,9 @@ export function Nav() {
             )}
           </NavigationMenuList>
         </NavigationMenu>
-        <ModeToggle />
+        <div className="ml-2">
+          <ModeToggle />
+        </div>
       </div>
     </nav>
   );
