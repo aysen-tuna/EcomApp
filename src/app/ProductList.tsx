@@ -66,7 +66,7 @@ export default function ProductList() {
 
   return (
     <div className="w-full space-y-10">
-      <section className="mx-4 relative h-72 md:h-96 overflow-hidden rounded-2xl">
+      <section className="relative h-72 md:h-96 overflow-hidden">
         <img
           src="/hero.webp"
           alt=""
@@ -93,12 +93,6 @@ export default function ProductList() {
           <h2 className="text-xl font-semibold text-black/90 dark:text-white">
             Product List
           </h2>
-
-          {user ? (
-            <p className="text-sm text-black/60 dark:text-white/60">
-              Cart: {cartCount}
-            </p>
-          ) : null}
         </div>
 
         <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
@@ -122,7 +116,7 @@ export default function ProductList() {
                     size="icon"
                     variant="secondary"
                     disabled={!p.stripePriceId}
-                    className="absolute top-3 right-3 z-10 shadow-sm hover:bg-neutral-200 dark:hover:bg-neutral-700 active:scale-95"
+                    className="absolute top-3 right-3 z-10 shadow-sm hover:bg-neutral-200 dark:hover:bg-neutral-700 active:bg-neutral-900 active:text-white active:scale-90 dark:active:bg-neutral-100"
                     onClick={() => {
                       if (!p.stripePriceId) return;
                       addPriceToCart(p.stripePriceId, uid);

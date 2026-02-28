@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -16,7 +17,6 @@ import {
 
 import { ModeToggle } from "@/components/mode-toggle";
 import { useAuth } from "@/app/AuthProvider";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getCartCount, onCartChange } from "@/lib/cart";
@@ -36,12 +36,19 @@ export function Nav() {
   }, [uid]);
 
   return (
-    <nav className="flex w-full flex-wrap justify-between items-center">
-      <h1 className="text-lg font-bold ">
-        <Link href="/" prefetch={false}>
-          Ecom
-        </Link>
-      </h1>
+    <nav className="fixed top-0 left-0 right-0 z-50 w-full h-16 px-4 flex justify-between items-center bg-neutral-200 dark:bg-neutral-900 border-b border-neutral-300/60 dark:border-neutral-800">
+      <Link href="/" prefetch={false} className="flex items-center">
+        <img
+          src="/shopwave_logo_black.webp"
+          alt="ShopWave logo"
+          className="h-16 w-auto block dark:hidden"
+        />
+        <img
+          src="/shopwave_logo_white.webp"
+          alt="ShopWave logo"
+          className="h-16 w-auto hidden dark:block"
+        />
+      </Link>
 
       <div className="flex items-center gap-4">
         <NavigationMenu>
