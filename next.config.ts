@@ -1,15 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
- 
   reactCompiler: true,
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "iua0ldc1zqsxr4iy.public.blob.vercel-storage.com",
+        hostname: "1v6isbknvv5imshv.public.blob.vercel-storage.com",
         port: "",
-        pathname: "/products/images/**",
+        pathname: "/**",
       },
     ],
   },
