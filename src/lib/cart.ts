@@ -25,6 +25,11 @@ function safeRead(key: string): CartItem[] {
   }
 }
 
+export function getCartQty(priceId: string, userId?: string) {
+  const items = getCartItems(userId);
+  return items.find((x) => x.priceId === priceId)?.qty ?? 0;
+}
+
 export function getCartItems(userId?: string): CartItem[] {
   return safeRead(getKey(userId));
 }
@@ -35,9 +40,20 @@ export function saveCartItems(items: CartItem[], userId?: string) {
   emit();
 }
 
-export function addPriceToCart(priceId: string, userId?: string) {
+export function addPriceToCart(
+  priceId: string,
+  userId?: string,
+  maxQty?: number,
+) {
   const items = getCartItems(userId);
   const found = items.find((x) => x.priceId === priceId);
+
+  const currentQty = found?.qty ?? 0;
+
+  if (typeof maxQty === "number") {
+    if (maxQty <= 0) return;
+    if (currentQty >= maxQty) return;
+  }
 
   if (found) {
     found.qty += 1;
