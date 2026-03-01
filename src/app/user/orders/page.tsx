@@ -98,11 +98,22 @@ export default function UserOrdersPage() {
                           const unit = (it.unitAmount ?? 0) / 100;
                           const line = unit * (it.qty ?? 0);
 
+                          const img = it.imageUrl ?? "";
+
                           return (
                             <div
                               key={`${o.id}-${idx}`}
                               className="flex justify-between gap-3 p-2 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900"
                             >
+                              {img ? (
+                                <img
+                                  src={img}
+                                  alt={it.title ?? "product"}
+                                  className="w-14 h-14 rounded-md object-cover bg-neutral-200 dark:bg-neutral-800"
+                                />
+                              ) : (
+                                <div className="w-14 h-14 rounded-md bg-neutral-200 dark:bg-neutral-800" />
+                              )}
                               <div className="min-w-0">
                                 <p className="font-semibold truncate">
                                   {it.title}
