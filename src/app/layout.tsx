@@ -44,7 +44,7 @@ export default function RootLayout({
             <main className="min-h-dvh pt-16">{children}</main>
 
             <footer className="mt-12 border-t border-black/10 dark:border-white/10">
-              <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-black/60 dark:text-white/60 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <div className="mx-auto max-w-6xl xl:max-w-7xl 2xl:max-w-[1600px] px-4 py-6 text-sm text-black/60 dark:text-white/60 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <span>ShopWave © {new Date().getFullYear()}</span>
                 <span>Next.js • Firebase • Stripe</span>
                 <div className="flex gap-4">
