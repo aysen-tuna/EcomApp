@@ -6,6 +6,7 @@ The app supports authentication, admin product management, Stripe payments, and 
 
 ✨ Features
 🔐 Authentication
+
 - Email & password signup/login
 - Secure logout
 - Automatic redirect for authenticated users
@@ -13,6 +14,7 @@ The app supports authentication, admin product management, Stripe payments, and 
 - Admin role stored in Firestore (admin: true)
 
 🎨 Theme Management
+
 - Powered by next-themes
 - User preference saved in Firestore
 - Auto-applied on login
@@ -44,6 +46,7 @@ Only users with admin: true can access admin routes.
 ```
 
 🖼️ Image Upload
+
 - Single or multiple image upload
 - Stored in Vercel Blob
 - URLs saved to Firestore
@@ -51,6 +54,7 @@ Only users with admin: true can access admin routes.
 - Removed images are deleted from Blob
 
 ✏️ Edit Product
+
 - Form prefilled with existing data
 - Add/remove images
 - Firestore updates automatically
@@ -58,20 +62,23 @@ Only users with admin: true can access admin routes.
 
 🗑️ Delete Product
 When admin deletes a product:
+
 - Firestore document removed
 - Related Blob images deleted
 
 📦 Cart & Checkout
-Flow: 
-1. User adds products to cart 
-2. Stripe Checkout Session created 
-3. User completes payment 
+Flow:
+
+1. User adds products to cart
+2. Stripe Checkout Session created
+3. User completes payment
 4. Stripe webhook is triggered
-5. Order is saved to Firestore 
-6. Product stock is decreased 
+5. Order is saved to Firestore
+6. Product stock is decreased
 7. Order appears in My Orders
 
 💳 Stripe Integration
+
 - Secure Checkout Sessions
 - Session cookies for user tracking
 - Webhook-driven order creation
@@ -83,13 +90,15 @@ Flow:
 Unit Tests (Jest)
 
 Covers:
+
 - Zod validation
 - Utility functions
 - Price calculations
-Run:npm run test
+  Run:npm run test
 
 E2E Tests (Playwright)
 Covered flows:
+
 - Admin creates product
 - Image upload validation
 - Error handling
@@ -144,8 +153,8 @@ service cloud.firestore {
 ⚙️ Code Quality & CI
 This project includes an automated CI pipeline using **GitHub Actions**.
 The pipeline runs on every push and pull request and performs:
-- Prettier formatting check  
-- Unit tests (Jest)  
+- Prettier formatting check
+- Unit tests (Jest)
 - End-to-end tests (Playwright)
 This ensures consistent code style and prevents broken code from being merged.
 
