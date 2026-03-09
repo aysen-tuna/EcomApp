@@ -5,10 +5,10 @@ import { SimpleField } from '@/components/SimpleField';
 
 describe('SimpleField component', () => {
   it('should render label and value', () => {
-    render(<SimpleField id="title" label="Title" value="Bike" onChange={() => {}} />);
+    render(<SimpleField id="title" label="Title" value="Modern Chair" onChange={() => {}} />);
 
     expect(screen.getByText('Title')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('Bike')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Modern Chair')).toBeInTheDocument();
   });
 
   it('should call onChange when typing', async () => {
@@ -17,7 +17,7 @@ describe('SimpleField component', () => {
 
     render(<SimpleField id="title" label="Title" value="" onChange={onChangeMock} />);
 
-    await user.type(screen.getByLabelText('Title'), 'Bike');
+    await user.type(screen.getByLabelText('Title'), 'Modern Chair');
 
     expect(onChangeMock).toHaveBeenCalled();
   });
@@ -35,7 +35,7 @@ describe('SimpleField component', () => {
 
   it('should render without modifications', () => {
     const { container } = render(
-      <SimpleField id="title" label="Title" value="Bike" onChange={() => {}} />,
+      <SimpleField id="title" label="Title" value="Modern Chair" onChange={() => {}} />,
     );
 
     expect(container).toMatchSnapshot();

@@ -1,15 +1,16 @@
 import { productSchema } from '@/lib/productSchema';
+import { ProductCategories } from '@/lib/productCategories';
 
 describe('productSchema', () => {
   const validProduct = {
-    title: 'bike',
-    description: 'Nice bike',
-    brand: 'trek',
-    serialNumber: 'tr008976',
-    category: 'Road',
-    price: { amount: 150, currency: 'EUR' as const },
+    title: 'Urban Sweatshirt',
+    description: 'Nice Sweatshirt',
+    brand: 'ShopWave',
+    serialNumber: 'SW-50CLO-002',
+    category: ProductCategories[0],
+    price: { amount: 60, currency: 'EUR' as const },
     taxRate: 18,
-    stock: 9,
+    stock: 18,
     draft: false,
     discount: undefined,
     imageUrls: ['https://example.com/a.jpg'],
@@ -18,11 +19,11 @@ describe('productSchema', () => {
   it('should parse a valid product', () => {
     const result = productSchema.parse(validProduct);
 
-    expect(result.title).toBe('bike');
-    expect(result.serialNumber).toBe('tr008976');
-    expect(result.price.amount).toBe(150);
+    expect(result.title).toBe('Urban Sweatshirt');
+    expect(result.serialNumber).toBe('SW-50CLO-002');
+    expect(result.price.amount).toBe(60);
     expect(result.price.currency).toBe('EUR');
-    expect(result.stock).toBe(9);
+    expect(result.stock).toBe(18);
   });
 
   it('should throw error if title is empty', () => {
@@ -73,15 +74,15 @@ describe('productSchema', () => {
   it('should coerce string numbers to numbers', () => {
     const product = {
       ...validProduct,
-      price: { amount: '150', currency: 'EUR' },
+      price: { amount: '60', currency: 'EUR' },
       taxRate: '18',
-      stock: '9',
+      stock: '18',
     };
 
     const result = productSchema.parse(product);
 
-    expect(result.price.amount).toBe(150);
+    expect(result.price.amount).toBe(60);
     expect(result.taxRate).toBe(18);
-    expect(result.stock).toBe(9);
+    expect(result.stock).toBe(18);
   });
 });

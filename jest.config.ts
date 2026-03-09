@@ -203,6 +203,9 @@ const config: Config = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+
+  testMatch: ['<rootDir>/src/__tests__/**/*.test.ts?(x)'],
+  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/e2e-tests/'],
 };
 
 export default createJestConfig(config);

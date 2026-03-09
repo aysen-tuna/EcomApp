@@ -3,7 +3,7 @@
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { SimpleField } from '@/components/SimpleField';
-import { ProductCategory } from '@/lib/productCategories';
+import { ProductCategories } from '@/lib/productCategories';
 
 export type ProductValues = {
   title: string;
@@ -88,7 +88,7 @@ export function ProductForm({
         label="Category"
         value={values.category}
         onChange={(v) => onChange({ category: v })}
-        options={ProductCategory}
+        options={ProductCategories}
       />
 
       <SimpleField

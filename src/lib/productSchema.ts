@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { ProductCategory } from '@/lib/productCategories';
+import { ProductCategories } from '@/lib/productCategories';
 
 export const productSchema = z.object({
   title: z.string().trim().min(1, 'Title is required'),
   description: z.string().trim().optional().default(''),
   brand: z.string().trim().optional().default(''),
   serialNumber: z.string().trim().min(1, 'Serial Number is required'),
-  category: z.enum(ProductCategory).default('Clothing'),
+  category: z.enum(ProductCategories).default('Clothing'),
 
   price: z.object({
     amount: z.coerce.number().positive('Price must be greater than 0'),

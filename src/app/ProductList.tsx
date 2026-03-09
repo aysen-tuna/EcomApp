@@ -7,7 +7,7 @@ import { useAuth } from '@/app/AuthProvider';
 import { db } from '@/lib/firebase/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { getCartCount, onCartChange } from '@/lib/cart';
-import { ProductCategory } from '@/lib/productCategories';
+import { ProductCategories, type ProductCategory } from '@/lib/productCategories';
 
 type Product = {
   id: string;
@@ -25,12 +25,12 @@ type Product = {
 export default function ProductList() {
   const [products, setProducts] = useState<Product[]>([]);
   const [cartCount, setCartCount] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState<'All' | ProductCategory>('All');
 
   const { user, loading, isAdmin } = useAuth();
   const uid = user?.uid;
 
-  const categories = ['All', ...ProductCategory];
+  const categories: Array<'All' | ProductCategory> = ['All', ...ProductCategories];
   const filteredProducts =
     selectedCategory === 'All' ? products : products.filter((p) => p.category === selectedCategory);
 

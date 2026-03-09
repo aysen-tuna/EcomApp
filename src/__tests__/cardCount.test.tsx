@@ -8,7 +8,7 @@ jest.mock('@/app/actions/admin/products/delete', () => ({
   deleteProduct: jest.fn(),
 }));
 
-jest.mock('@/lib/firebase', () => ({
+jest.mock('@/lib/firebase/firebase', () => ({
   db: {},
 }));
 
@@ -40,10 +40,11 @@ jest.mock('firebase/firestore', () => ({
         {
           id: 'p1',
           data: () => ({
-            title: 'bike',
-            serialNumber: 'tr008976',
-            stock: 9,
-            price: { amount: 150, currency: 'EUR' },
+            title: 'Classic Cotton Tote',
+            serialNumber: 'SW-50BAG-005',
+            category: 'Bags',
+            stock: 12,
+            price: { amount: 13, currency: 'EUR' },
             stripePriceId: 'price_123',
             imageUrls: [],
           }),
@@ -60,9 +61,10 @@ test('cart count should increase after Add to Cart click', async () => {
     </>,
   );
 
-  await screen.findByText('bike');
+  await screen.findByText('Classic Cotton Tote');
 
-  await userEvent.click(screen.getByRole('button', { name: /Add to Cart/i }));
+  const user = userEvent.setup();
+  await user.click(screen.getByRole('button', { name: /Add to Cart/i }));
 
   expect(screen.getByText('1')).toBeInTheDocument();
 });
