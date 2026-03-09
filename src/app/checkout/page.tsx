@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase/firebase";
-import { Button } from "@/components/ui/button";
-import { addPriceToCart, getCartItems, removeOneFromCart } from "@/lib/cart";
-import { useAuth } from "@/app/AuthProvider";
-import type { CartItem } from "@/lib/cart";
+import { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase/firebase';
+import { Button } from '@/components/ui/button';
+import { addPriceToCart, getCartItems, removeOneFromCart } from '@/lib/cart';
+import { useAuth } from '@/app/AuthProvider';
+import type { CartItem } from '@/lib/cart';
 
 type Product = {
   id: string;
@@ -14,7 +14,7 @@ type Product = {
   serialNumber: string;
   imageUrls?: string[];
   stripePriceId?: string;
-  price?: { amount: number; currency: "EUR" };
+  price?: { amount: number; currency: 'EUR' };
 };
 
 type CartRow = {
@@ -38,7 +38,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     async function loadProducts() {
-      const snap = await getDocs(collection(db, "products"));
+      const snap = await getDocs(collection(db, 'products'));
       setProducts(snap.docs.map((d) => ({ id: d.id, ...(d.data() as any) })));
     }
     loadProducts();
@@ -69,7 +69,7 @@ export default function CheckoutPage() {
 
   const cartPayload: CartPayloadItem[] = cartRows
     .map((row) => ({
-      productId: row.product?.id ?? "",
+      productId: row.product?.id ?? '',
       qty: row.quantity,
     }))
     .filter((x) => Boolean(x.productId) && x.qty > 0);
@@ -98,28 +98,14 @@ export default function CheckoutPage() {
         </p>
 
         <p className="text-sm opacity-70">
-          Total in cart:{" "}
-          <span className="font-semibold">€{grandTotal.toFixed(2)}</span>
+          Total in cart: <span className="font-semibold">€{grandTotal.toFixed(2)}</span>
         </p>
 
-        <form
-          action="/api/stripe/checkout"
-          method="POST"
-          onSubmit={() => setBusy(true)}
-        >
-          <input
-            type="hidden"
-            name="cart"
-            value={JSON.stringify(cartPayload)}
-          />
+        <form action="/api/stripe/checkout" method="POST" onSubmit={() => setBusy(true)}>
+          <input type="hidden" name="cart" value={JSON.stringify(cartPayload)} />
 
-          <Button
-            type="submit"
-            disabled={totalCount < 1 || busy || cartPayload.length < 1}
-          >
-            {busy
-              ? "Redirecting..."
-              : `Pay with Stripe (€${grandTotal.toFixed(2)})`}
+          <Button type="submit" disabled={totalCount < 1 || busy || cartPayload.length < 1}>
+            {busy ? 'Redirecting...' : `Pay with Stripe (€${grandTotal.toFixed(2)})`}
           </Button>
         </form>
       </div>
@@ -130,7 +116,7 @@ export default function CheckoutPage() {
         <div className="space-y-3">
           {cartRows.map((row) => {
             const p = row.product;
-            const img = p?.imageUrls?.[0] ?? "";
+            const img = p?.imageUrls?.[0] ?? '';
 
             const unit = p?.price?.amount ?? 0;
             const lineTotal = unit * row.quantity;
@@ -143,7 +129,7 @@ export default function CheckoutPage() {
                 {img ? (
                   <img
                     src={img}
-                    alt={p?.title ?? "product"}
+                    alt={p?.title ?? 'product'}
                     className="w-20 h-20 object-contain rounded bg-neutral-50 dark:bg-neutral-900"
                   />
                 ) : (
@@ -151,25 +137,18 @@ export default function CheckoutPage() {
                 )}
 
                 <div className="flex-1">
-                  <p className="font-semibold">
-                    {p?.title ?? "Unknown product"}
+                  <p className="font-semibold">{p?.title ?? 'Unknown product'}</p>
+
+                  <p className="text-sm opacity-70">
+                    Serial: <span className="font-medium">{p?.serialNumber ?? '-'}</span>
                   </p>
 
                   <p className="text-sm opacity-70">
-                    Serial:{" "}
-                    <span className="font-medium">
-                      {p?.serialNumber ?? "-"}
-                    </span>
+                    Unit Price: <span className="font-medium">€{unit.toFixed(2)}</span>
                   </p>
 
                   <p className="text-sm opacity-70">
-                    Unit Price:{" "}
-                    <span className="font-medium">€{unit.toFixed(2)}</span>
-                  </p>
-
-                  <p className="text-sm opacity-70">
-                    Line Total:{" "}
-                    <span className="font-medium">€{lineTotal.toFixed(2)}</span>
+                    Line Total: <span className="font-medium">€{lineTotal.toFixed(2)}</span>
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -183,9 +162,7 @@ export default function CheckoutPage() {
                     −
                   </Button>
 
-                  <span className="min-w-7 text-center font-semibold">
-                    {row.quantity}
-                  </span>
+                  <span className="min-w-7 text-center font-semibold">{row.quantity}</span>
 
                   <Button
                     type="button"

@@ -1,30 +1,26 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Nav } from "@/components/Nav";
-import { AuthProvider } from "./AuthProvider";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { ThemeProvider } from '@/components/theme-provider';
+import { Nav } from '@/components/Nav';
+import { AuthProvider } from './AuthProvider';
+import './globals.css';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "ShopWave",
-  description: "Modern e-commerce demo built with Next.js, Firebase, Stripe",
+  title: 'ShopWave',
+  description: 'Modern e-commerce demo built with Next.js, Firebase, Stripe',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -55,11 +51,7 @@ export default function RootLayout({
                   >
                     GitHub
                   </a>
-                  <a
-                    className="hover:underline"
-                    href="https://www.linkedin.com"
-                    target="_blank"
-                  >
+                  <a className="hover:underline" href="https://www.linkedin.com" target="_blank">
                     LinkedIn
                   </a>
                 </div>

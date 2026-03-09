@@ -1,10 +1,5 @@
-import { db } from "@/lib/firebase/firebase";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  Timestamp,
-} from "firebase/firestore";
+import { db } from '@/lib/firebase/firebase';
+import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 
 export type ProductInput = {
   title: string;
@@ -14,7 +9,7 @@ export type ProductInput = {
   category: string;
   price: {
     amount: number;
-    currency: "EUR";
+    currency: 'EUR';
   };
   taxRate: number;
   stock: number;

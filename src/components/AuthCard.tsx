@@ -1,10 +1,10 @@
-"use client";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { getUIErrorFromFirebaseError } from "@/lib/firebase/firebase";
+'use client';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { getUIErrorFromFirebaseError } from '@/lib/firebase/firebase';
 
 type Props = {
   title: string;
@@ -16,27 +16,24 @@ type Props = {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function AuthCard({ title, buttonText, error, onSubmit }: Props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [localError, setLocalError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [localError, setLocalError] = useState('');
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLocalError("");
+    setLocalError('');
 
-    if (!email.trim()) return setLocalError("ui/empty-email");
+    if (!email.trim()) return setLocalError('ui/empty-email');
 
-    if (!emailRegex.test(email.trim()))
-      return setLocalError("auth/invalid-email");
+    if (!emailRegex.test(email.trim())) return setLocalError('auth/invalid-email');
 
-    if (!password.trim()) return setLocalError("ui/empty-password");
+    if (!password.trim()) return setLocalError('ui/empty-password');
 
     await onSubmit(email.trim(), password);
   }
-  const errorCodeToShow = localError || error || "";
-  const errorMessage = errorCodeToShow
-    ? getUIErrorFromFirebaseError(errorCodeToShow)
-    : "";
+  const errorCodeToShow = localError || error || '';
+  const errorMessage = errorCodeToShow ? getUIErrorFromFirebaseError(errorCodeToShow) : '';
 
   return (
     <div className="w-full flex min-h-[calc(100dvh-120px)] justify-center items-center pt-16">
@@ -81,9 +78,7 @@ export function AuthCard({ title, buttonText, error, onSubmit }: Props) {
               {buttonText}
             </Button>
 
-            {errorMessage ? (
-              <p className="mt-4 text-sm text-red-600">{errorMessage}</p>
-            ) : null}
+            {errorMessage ? <p className="mt-4 text-sm text-red-600">{errorMessage}</p> : null}
           </form>
         </CardContent>
       </Card>

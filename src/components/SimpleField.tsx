@@ -1,6 +1,6 @@
-"use client";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+'use client';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 type Props = {
   id?: string;
@@ -19,7 +19,7 @@ export function SimpleField({
   label,
   value,
   onChange,
-  type = "text",
+  type = 'text',
   placeholder,
   required,
   min,
@@ -28,8 +28,8 @@ export function SimpleField({
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
 
-    if (type === "number") {
-      if (val !== "" && Number(val) < 0) return;
+    if (type === 'number') {
+      if (val !== '' && Number(val) < 0) return;
 
       onChange(val);
       return;

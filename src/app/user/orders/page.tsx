@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useAuth } from "@/app/AuthProvider";
-import { listenUserOrders, type OrderDoc } from "@/lib/orders";
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/app/AuthProvider';
+import { listenUserOrders, type OrderDoc } from '@/lib/orders';
 
 export default function UserOrdersPage() {
   const { user, loading } = useAuth();
@@ -32,13 +32,13 @@ export default function UserOrdersPage() {
             const total = `€${((o.amountTotal ?? 0) / 100).toFixed(2)}`;
 
             const ms = o.createdAt?.toMillis?.();
-            const date = ms ? new Date(ms).toLocaleString() : "-";
+            const date = ms ? new Date(ms).toLocaleString() : '-';
 
-            const s = (o.status ?? "unknown").toLowerCase();
-            const ok = s === "complete" || s === "completed" || s === "paid";
+            const s = (o.status ?? 'unknown').toLowerCase();
+            const ok = s === 'complete' || s === 'completed' || s === 'paid';
             const statusClass = ok
-              ? "bg-green-500/10 text-green-700 dark:text-green-400"
-              : "bg-neutral-500/10 text-neutral-700 dark:text-neutral-300";
+              ? 'bg-green-500/10 text-green-700 dark:text-green-400'
+              : 'bg-neutral-500/10 text-neutral-700 dark:text-neutral-300';
 
             const isOpen = openId === o.id;
             const items = o.items ?? [];
@@ -76,11 +76,11 @@ export default function UserOrdersPage() {
           ${statusClass}
         `}
                       >
-                        {o.status ?? "unknown"}
+                        {o.status ?? 'unknown'}
                       </span>
 
                       <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                        {isOpen ? "Hide details" : "View details"}
+                        {isOpen ? 'Hide details' : 'View details'}
                       </span>
                     </div>
                   </div>
@@ -89,16 +89,14 @@ export default function UserOrdersPage() {
                 {isOpen ? (
                   <div className="border-t p-4 bg-neutral-50 dark:bg-neutral-900/30">
                     {items.length === 0 ? (
-                      <p className="text-sm opacity-70">
-                        No item details saved for this order.
-                      </p>
+                      <p className="text-sm opacity-70">No item details saved for this order.</p>
                     ) : (
                       <div className="space-y-2">
                         {items.map((it, idx) => {
                           const unit = (it.unitAmount ?? 0) / 100;
                           const line = unit * (it.qty ?? 0);
 
-                          const img = it.imageUrl ?? "";
+                          const img = it.imageUrl ?? '';
 
                           return (
                             <div
@@ -108,31 +106,23 @@ export default function UserOrdersPage() {
                               {img ? (
                                 <img
                                   src={img}
-                                  alt={it.title ?? "product"}
+                                  alt={it.title ?? 'product'}
                                   className="w-14 h-14 rounded-md object-cover bg-neutral-200 dark:bg-neutral-800"
                                 />
                               ) : (
                                 <div className="w-14 h-14 rounded-md bg-neutral-200 dark:bg-neutral-800" />
                               )}
                               <div className="min-w-0">
-                                <p className="font-semibold truncate">
-                                  {it.title}
-                                </p>
+                                <p className="font-semibold truncate">{it.title}</p>
                                 <p className="text-sm opacity-70">
-                                  Qty:{" "}
-                                  <span className="font-medium">{it.qty}</span>{" "}
-                                  • Unit price:{" "}
-                                  <span className="font-medium">
-                                    €{unit.toFixed(2)}
-                                  </span>
+                                  Qty: <span className="font-medium">{it.qty}</span> • Unit price:{' '}
+                                  <span className="font-medium">€{unit.toFixed(2)}</span>
                                 </p>
                               </div>
 
                               <div className="text-right">
                                 <p className="text-xs opacity-60">Total</p>
-                                <p className="font-semibold">
-                                  €{line.toFixed(2)}
-                                </p>
+                                <p className="font-semibold">€{line.toFixed(2)}</p>
                               </div>
                             </div>
                           );
