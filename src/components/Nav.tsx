@@ -42,12 +42,16 @@ export function Nav() {
         <Image
           src="/shopwave_logo_black.webp"
           alt="ShopWave logo"
+          width={140}
+          height={40}
           className="h-16 w-auto block dark:hidden"
           priority
         />
         <Image
           src="/shopwave_logo_white.webp"
           alt="ShopWave logo"
+          width={140}
+          height={40}
           className="h-16 w-auto hidden dark:block"
           priority
         />
