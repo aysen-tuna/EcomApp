@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import {
   NavigationMenu,
@@ -38,15 +39,21 @@ export function Nav() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 w-full h-16 px-4 flex justify-between items-center bg-neutral-200 dark:bg-neutral-900 border-b border-neutral-300/60 dark:border-neutral-800">
       <Link href="/" prefetch={false} className="flex items-center">
-        <img
+        <Image
           src="/shopwave_logo_black.webp"
           alt="ShopWave logo"
+          width={140}
+          height={40}
           className="h-16 w-auto block dark:hidden"
+          priority
         />
-        <img
+        <Image
           src="/shopwave_logo_white.webp"
           alt="ShopWave logo"
+          width={140}
+          height={40}
           className="h-16 w-auto hidden dark:block"
+          priority
         />
       </Link>
 
