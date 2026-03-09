@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { adminAuth } from "@/lib/firebase/admin";
+import { NextRequest, NextResponse } from 'next/server';
+import { adminAuth } from '@/lib/firebase/admin';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,22 +10,19 @@ export async function POST(request: NextRequest) {
       expiresIn,
     });
 
-    const isProd = process.env.NODE_ENV === "production";
+    const isProd = process.env.NODE_ENV === 'production';
 
-    return new NextResponse(JSON.stringify({ status: "success" }), {
+    return new NextResponse(JSON.stringify({ status: 'success' }), {
       status: 200,
       headers: {
-        "Content-Type": "application/json",
-        "Set-Cookie": `__session=${sessionCookie}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${Math.floor(
+        'Content-Type': 'application/json',
+        'Set-Cookie': `__session=${sessionCookie}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${Math.floor(
           expiresIn / 1000,
-        )}${isProd ? "; Secure" : ""}`,
+        )}${isProd ? '; Secure' : ''}`,
       },
     });
   } catch (error) {
-    console.error("Error creating session cookie:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    console.error('Error creating session cookie:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

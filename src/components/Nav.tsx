@@ -1,26 +1,26 @@
-"use client";
-import Link from "next/link";
+'use client';
+import Link from 'next/link';
 
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+} from '@/components/ui/navigation-menu';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
-import { ModeToggle } from "@/components/mode-toggle";
-import { useAuth } from "@/app/AuthProvider";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getCartCount, onCartChange } from "@/lib/cart";
-import { ShoppingCart, ChevronDown } from "lucide-react";
+import { ModeToggle } from '@/components/mode-toggle';
+import { useAuth } from '@/app/AuthProvider';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getCartCount, onCartChange } from '@/lib/cart';
+import { ShoppingCart, ChevronDown } from 'lucide-react';
 
 export function Nav() {
   const { user, logout, isAdmin } = useAuth();
@@ -64,7 +64,7 @@ export function Nav() {
                           bg-neutral-300 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100
                           font-semibold uppercase border border-neutral-400 dark:border-neutral-700"
                         >
-                          {(user.email?.[0] ?? "U").toUpperCase()}
+                          {(user.email?.[0] ?? 'U').toUpperCase()}
                         </div>
 
                         <ChevronDown className="h-4 w-4 opacity-70" />
@@ -79,7 +79,7 @@ export function Nav() {
                       <DropdownMenuItem
                         onClick={async () => {
                           await logout();
-                          router.replace("/");
+                          router.replace('/');
                         }}
                       >
                         Logout
@@ -112,7 +112,7 @@ export function Nav() {
 
                 <NavigationMenuItem>
                   <Link
-                    href={cartCount > 0 ? "/checkout" : "#"}
+                    href={cartCount > 0 ? '/checkout' : '#'}
                     className="relative flex items-center justify-center"
                     aria-label="Go to checkout"
                   >
@@ -124,7 +124,7 @@ export function Nav() {
                         rounded-full bg-red-600 text-white text-xs
                         flex items-center justify-center leading-none"
                       >
-                        {cartCount > 99 ? "99+" : cartCount}
+                        {cartCount > 99 ? '99+' : cartCount}
                       </span>
                     )}
                   </Link>

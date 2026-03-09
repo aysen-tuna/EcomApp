@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
 import {
   User as FirebaseUser,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-} from "firebase/auth";
-import { auth, getUserDoc, createUser } from "@/lib/firebase/firebase";
-import { useTheme } from "next-themes";
+} from 'firebase/auth';
+import { auth, getUserDoc, createUser } from '@/lib/firebase/firebase';
+import { useTheme } from 'next-themes';
 
-type ThemePreference = "light" | "dark" | "system";
+type ThemePreference = 'light' | 'dark' | 'system';
 
 type AuthContextType = {
   user: FirebaseUser | null;
   setUser: (user: FirebaseUser | null) => void;
-  register: (email: string, password: string) => Promise<"ok" | string>;
-  login: (email: string, password: string) => Promise<"ok" | string>;
+  register: (email: string, password: string) => Promise<'ok' | string>;
+  login: (email: string, password: string) => Promise<'ok' | string>;
   logout: () => Promise<void>;
   loading: boolean;
   isAdmin: boolean;
@@ -33,9 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { theme, setTheme } = useTheme();
 
   const currentTheme: ThemePreference =
-    theme === "light" || theme === "dark" || theme === "system"
-      ? theme
-      : "system";
+    theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
@@ -56,11 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         const savedTheme = data?.theme;
-        if (
-          savedTheme === "light" ||
-          savedTheme === "dark" ||
-          savedTheme === "system"
-        ) {
+        if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'system') {
           setTheme(savedTheme);
         }
 
@@ -75,52 +69,50 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unsubscribe();
   }, [currentTheme, setTheme]);
 
-  const register: AuthContextType["register"] = async (email, password) => {
+  const register: AuthContextType['register'] = async (email, password) => {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await createUser(email, cred.user.uid, currentTheme);
       setUser(cred.user);
 
       const idToken = await cred.user.getIdToken();
-      const res = await fetch("/api/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),
       });
 
-      if (!res.ok) return "session-failed";
-      return "ok";
+      if (!res.ok) return 'session-failed';
+      return 'ok';
     } catch (e: any) {
-      return e?.code ?? "auth/unknown";
+      return e?.code ?? 'auth/unknown';
     }
   };
 
-  const login: AuthContextType["login"] = async (email, password) => {
+  const login: AuthContextType['login'] = async (email, password) => {
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
 
       const idToken = await cred.user.getIdToken();
-      const res = await fetch("/api/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken }),
       });
 
-      if (!res.ok) return "session-failed";
-      return "ok";
+      if (!res.ok) return 'session-failed';
+      return 'ok';
     } catch (e: any) {
-      return e?.code ?? "auth/unknown";
+      return e?.code ?? 'auth/unknown';
     }
   };
 
-  const logout: AuthContextType["logout"] = async () => {
+  const logout: AuthContextType['logout'] = async () => {
     await signOut(auth);
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, setUser, register, login, logout, loading, isAdmin }}
-    >
+    <AuthContext.Provider value={{ user, setUser, register, login, logout, loading, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );
@@ -128,6 +120,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };

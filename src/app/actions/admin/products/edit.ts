@@ -1,35 +1,29 @@
-"use server";
+'use server';
 
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase/firebase";
-import { del } from "@vercel/blob";
-import { productSchema } from "@/lib/productSchema";
-import { revalidatePath } from "next/cache";
-import { stripe } from "@/lib/stripe";
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase/firebase';
+import { del } from '@vercel/blob';
+import { productSchema } from '@/lib/productSchema';
+import { revalidatePath } from 'next/cache';
+import { stripe } from '@/lib/stripe';
 
-export async function editProduct(
-  uid: string,
-  productId: string,
-  raw: unknown,
-) {
-  if (!uid) throw new Error("Missing uid");
-  if (!productId) throw new Error("Missing productId");
+export async function editProduct(uid: string, productId: string, raw: unknown) {
+  if (!uid) throw new Error('Missing uid');
+  if (!productId) throw new Error('Missing productId');
 
   const parsed = productSchema.safeParse(raw);
   if (!parsed.success) {
-    throw new Error(parsed.error.issues[0]?.message ?? "Validation error");
+    throw new Error(parsed.error.issues[0]?.message ?? 'Validation error');
   }
 
-  const ref = doc(db, "products", productId);
+  const ref = doc(db, 'products', productId);
 
   const prevSnap = await getDoc(ref);
-  if (!prevSnap.exists()) throw new Error("Product not found");
+  if (!prevSnap.exists()) throw new Error('Product not found');
 
   const prev = prevSnap.data() as any;
 
-  const prevUrls: string[] = Array.isArray(prev?.imageUrls)
-    ? prev.imageUrls
-    : [];
+  const prevUrls: string[] = Array.isArray(prev?.imageUrls) ? prev.imageUrls : [];
   const nextUrls: string[] = Array.isArray((parsed.data as any)?.imageUrls)
     ? (parsed.data as any).imageUrls
     : [];
@@ -45,7 +39,7 @@ export async function editProduct(
   const prevStripePriceId = prev?.stripePriceId;
 
   if (!stripeProductId || !prevStripePriceId) {
-    throw new Error("Missing Stripe IDs on product");
+    throw new Error('Missing Stripe IDs on product');
   }
 
   await stripe.products.update(stripeProductId, {
@@ -54,8 +48,8 @@ export async function editProduct(
     images: parsed.data.imageUrls?.slice(0, 8),
     metadata: {
       serialNumber: parsed.data.serialNumber,
-      brand: parsed.data.brand ?? "",
-      category: parsed.data.category ?? "",
+      brand: parsed.data.brand ?? '',
+      category: parsed.data.category ?? '',
     },
   });
 
@@ -67,7 +61,7 @@ export async function editProduct(
   if (prevAmount !== newAmount) {
     const newPrice = await stripe.prices.create({
       product: stripeProductId,
-      currency: "eur",
+      currency: 'eur',
       unit_amount: Math.round(newAmount * 100),
     });
     stripePriceId = newPrice.id;
@@ -85,6 +79,6 @@ export async function editProduct(
     { merge: true },
   );
 
-  revalidatePath("/");
+  revalidatePath('/');
   return { ok: true };
 }

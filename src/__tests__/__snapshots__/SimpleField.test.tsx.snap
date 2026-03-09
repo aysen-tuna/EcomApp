@@ -17,7 +17,7 @@ exports[`SimpleField component should render without modifications 1`] = `
       data-slot="input"
       id="title"
       type="text"
-      value="Bike"
+      value="Modern Chair"
     />
   </div>
 </div>

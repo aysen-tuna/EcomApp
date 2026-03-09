@@ -1,5 +1,5 @@
-import { Suspense } from "react";
-import ProductListWrapper from "@/app/ProductListWrapper";
+import { Suspense } from 'react';
+import ProductListWrapper from '@/app/ProductListWrapper';
 
 export default function ProductsPage() {
   return (

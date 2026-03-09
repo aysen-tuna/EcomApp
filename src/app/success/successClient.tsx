@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { clearCart } from "@/lib/cart";
-import { useAuth } from "@/app/AuthProvider";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { clearCart } from '@/lib/cart';
+import { useAuth } from '@/app/AuthProvider';
 
 export default function SuccessClient() {
   const router = useRouter();
-   const { user } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-       clearCart(user?.uid);
-    const t = setTimeout(() => router.push("/user/orders"), 2500);
+    clearCart(user?.uid);
+    const t = setTimeout(() => router.push('/user/orders'), 2500);
     return () => clearTimeout(t);
   }, [router, user?.uid]);
 
@@ -24,7 +24,7 @@ export default function SuccessClient() {
       </p>
 
       <button
-        onClick={() => router.push("/user/orders")}
+        onClick={() => router.push('/user/orders')}
         className="px-4 py-2 rounded border text-sm"
       >
         Go now

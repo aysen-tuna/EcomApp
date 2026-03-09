@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { SimpleField } from "@/components/SimpleField";
-import { ProductCategory } from "@/lib/productCategories";
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { SimpleField } from '@/components/SimpleField';
+import { ProductCategories } from '@/lib/productCategories';
 
 export type ProductValues = {
   title: string;
@@ -20,7 +20,7 @@ export type ProductValues = {
 };
 
 type Props = {
-  mode: "create" | "edit";
+  mode: 'create' | 'edit';
   values: ProductValues;
   onChange: (patch: Partial<ProductValues>) => void;
 
@@ -43,7 +43,7 @@ export function ProductForm({
   onSubmit,
   saving = false,
   uploading = false,
-  error = "",
+  error = '',
 }: Props) {
   return (
     <form
@@ -52,7 +52,7 @@ export function ProductForm({
       noValidate
     >
       <h2 className="text-xl font-semibold">
-        {mode === "create" ? "Add Product" : "Edit Product"}
+        {mode === 'create' ? 'Add Product' : 'Edit Product'}
       </h2>
 
       <SimpleField
@@ -88,7 +88,7 @@ export function ProductForm({
         label="Category"
         value={values.category}
         onChange={(v) => onChange({ category: v })}
-        options={ProductCategory}
+        options={ProductCategories}
       />
 
       <SimpleField
@@ -175,17 +175,8 @@ export function ProductForm({
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-      <Button
-        type="submit"
-        name="addEditProduct"
-        className="w-full"
-        disabled={saving || uploading}
-      >
-        {saving
-          ? "Saving..."
-          : mode === "create"
-            ? "Save Product"
-            : "Update Product"}
+      <Button type="submit" name="addEditProduct" className="w-full" disabled={saving || uploading}>
+        {saving ? 'Saving...' : mode === 'create' ? 'Save Product' : 'Update Product'}
       </Button>
     </form>
   );
